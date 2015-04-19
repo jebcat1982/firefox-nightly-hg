@@ -6,28 +6,27 @@ pkgname=firefox-nightly-hg
 pkgver=97554
 pkgrel=1
 pkgdesc="Standalone web browser from mozilla.org, nightly version"
-_ffver="16.0a1"
+_ffver="40.0a1"
 arch=('i686' 'x86_64')
 license=('MPL' 'GPL' 'LGPL')
 depends=('gtk2' 'mozilla-common' 'libxt' 'startup-notification' 'mime-types' 'dbus-glib' 'alsa-lib'
          'libnotify' 'desktop-file-utils' 'hicolor-icon-theme'
          'libvpx' 'libevent' 'nss>=3.13.3' 'hunspell' 'sqlite')
 makedepends=('unzip' 'zip' 'diffutils' 'python2' 'wireless_tools' 'yasm' 'mesa'
-             'autoconf2.13' 'libidl2' 'imake' 'gcc4.6')
+             'autoconf2.13' 'libidl2' 'imake' 'gcc')
 optdepends=('wireless_tools: Location detection via available WiFi networks')
 replaces=('firefox-hg')
 url="http://www.mozilla.org/projects/firefox"
 install=firefox.install
 options=(!emptydirs)
-source=(mozconfig
+source=(firefox::hg+https://hg.mozilla.org/mozilla-central
+        mozconfig
         firefox-hg.desktop
         vendor.js)
-md5sums=('42127413afeadd72c090d2185bd6b7fd'
+md5sums=('SKIP'
+         '42127413afeadd72c090d2185bd6b7fd'
          'd4954a73cdcf5402ee01bc8840be3e1d'
          '0d053487907de4376d67d8f499c5502b')
-
-_hgroot="http://hg.mozilla.org"
-_hgrepo=mozilla-central
 
 build() {
   cd "$srcdir/mozilla-central"
@@ -39,8 +38,8 @@ build() {
   sed -i '/^PRE_RELEASE_SUFFIX := ""/s/ ""//' \
     browser/base/Makefile.in
 
-  export CC=gcc-4.6
-  export CXX=g++-4.6
+  export CC=gcc
+  export CXX=g++
 
   export LDFLAGS="$LDFLAGS -Wl,-rpath,/usr/lib/firefox-$_ffver"
   export PYTHON="/usr/bin/python2"
@@ -50,7 +49,6 @@ build() {
   make -f client.mk clean
   make -f client.mk build
 
-  kill $! || true
 }
 
 package() {
