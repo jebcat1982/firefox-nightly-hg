@@ -23,20 +23,21 @@ source=(firefox::hg+https://hg.mozilla.org/mozilla-central
         mozconfig
         firefox-hg.desktop
         vendor.js)
-md5sums=('SKIP'
+sha256sums=('SKIP'
          '42127413afeadd72c090d2185bd6b7fd'
          'd4954a73cdcf5402ee01bc8840be3e1d'
          '0d053487907de4376d67d8f499c5502b')
 
+
+pkgver() {
+  cd mozilla-central
+  echo $(hg identify -n).$(hg identify -i)}
+
 build() {
-  cd "$srcdir/mozilla-central"
+  cd "$srcdir/firefox"
   hg up tip
 
   cp ../mozconfig .mozconfig
-
-  # Fix PRE_RELEASE_SUFFIX
-  sed -i '/^PRE_RELEASE_SUFFIX := ""/s/ ""//' \
-    browser/base/Makefile.in
 
   export CC=gcc
   export CXX=g++
@@ -46,8 +47,7 @@ build() {
   export MOZ_MAKE_FLAGS="$MAKEFLAGS"
   unset MAKEFLAGS
 
-  make -f client.mk clean
-  make -f client.mk build
+  make 
 
 }
 
